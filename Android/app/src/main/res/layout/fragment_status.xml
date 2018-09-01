@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fbutton="http://schemas.android.com/tools"
+    android:id="@+id/status_frag"
+    android:orientation="vertical">
+
+    <android.widget.AbsoluteLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:backgroundTint="@color/dark_gray"
+        android:layout_alignParentLeft="true">
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_x="32dp"
+            android:layout_y="117dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_margin="2dp"
+                    android:id="@+id/c_btn_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_x="93dp"
+                    android:layout_y="168dp"
+                    android:text="Button"
+                    fbutton:layout_editor_absoluteX="27dp"
+                    fbutton:layout_editor_absoluteY="110dp" />
+
+                <Button
+                    android:layout_margin="2dp"
+                    android:id="@+id/c_btn_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_x="4dp"
+                    android:layout_y="121dp"
+                    android:text="Button"
+                    fbutton:layout_editor_absoluteX="27dp"
+                    fbutton:layout_editor_absoluteY="110dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_margin="2dp"
+                    android:id="@+id/c_btn_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_x="93dp"
+                    android:layout_y="121dp"
+                    android:text="Button"
+                    fbutton:layout_editor_absoluteX="27dp"
+                    fbutton:layout_editor_absoluteY="110dp" />
+
+                <Button
+
+                    android:layout_margin="2dp"
+                    android:id="@+id/c_btn_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_x="3dp"
+                    android:layout_y="170dp"
+                    android:text="Button"
+                    fbutton:layout_editor_absoluteX="27dp"
+                    fbutton:layout_editor_absoluteY="110dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </TableLayout>
+
+    </android.widget.AbsoluteLayout>
+
+</RelativeLayout>
