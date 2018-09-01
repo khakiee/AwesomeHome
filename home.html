@@ -28,7 +28,10 @@
 	
 	//on off event handler
 	function on(data){
-		document.getElementById("b"+data).value = '1';
+		if(document.getElementById("b"+data).value=='0')
+			document.getElementById("b"+data).value='1';
+		else
+			document.getElementById("b"+data).value='0';
         	$.ajax({
                 	url:'./index.php',
                 	type:'get',
@@ -37,7 +40,6 @@
                         	$('#time').text(data);
                 	}
         	})
-        	document.getElementById("b"+data).value = '0';	
 	}
 	var ofdata;
 	//on off status check
@@ -48,11 +50,20 @@
 			success:function(data){
 				ofdata=data;
 				$('#time').text(data);
+				//alert(ofdata[1]);
+				var k;
 				for(var i=0;i<ofdata.length;i++){
-					if(ofdata[i]=='1'){
-						var k=i+1;
+					k=i+1;
+					if(ofdata[i]=='0'){
 						document.getElementById("c"+k).checked = true;
-				}}
+						document.getElementById("b"+k).value = '0';
+					}
+					else if(ofdata[i]=='1'){
+						document.getElementById("b"+k).value = '1';
+						document.getElementById("c"+k).checked = false;	
+					}
+					
+				}
 			}
 		});
 		
