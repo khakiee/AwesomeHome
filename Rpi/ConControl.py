@@ -3,6 +3,7 @@ import time
 import RPi.GPIO as GPIO
 
 # pip install -r requirements.txt로 설치하십셔
+# pip install RPi.GPIO
 
 switches = [18, 19, 20, 21]  # 릴레이 핀번호
 
