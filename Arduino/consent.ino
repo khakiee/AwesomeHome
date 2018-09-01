@@ -44,7 +44,7 @@ void connect_output(){
   }
   
   client.println(String("GET ")+ "/output HTTP/1.1");
-  client.println("Host: 35.167.126.17");
+  client.println("Host: 13.209.64.184");
   client.println("Connection: open");
   client.println();
   Serial.println("First Request sent");
@@ -60,14 +60,17 @@ void connect_output(){
   while (client.connected())
   {  
     String line = client.readStringUntil('\n');
-    //if(line.charAt(0)>47&&line.charAt(0)<58){
+    if(line.charAt(0)>47&&line.charAt(0)<58){
        Serial.println(line);
-      // info=line;
-      // c1=(int)line.charAt(0)-48;
-      // c2=(int)line.charAt(1)-48;
-      // c3=(int)line.charAt(2)-48;
-      // c4=(int)line.charAt(3)-48;
-    //}
+       c1=(int)line.charAt(0)-48;
+       c2=(int)line.charAt(1)-48;
+       c3=(int)line.charAt(2)-48;
+       c4=(int)line.charAt(3)-48;
+       Serial.println(c1);
+       Serial.println(c2);
+       Serial.println(c3);
+       Serial.println(c4);
+    }
   }
   client.stop();
 }
@@ -82,7 +85,7 @@ void connect_index(){
   }
   
   client.println(String("GET ")+ "/index2.php?b1="+c1+"&b2="+c2+"&b3="+c3+"&b4="+c4+" HTTP/1.1");
-  client.println("Host: 35.167.126.17");
+  client.println("Host: 13.209.64.184");
   client.println("Connection: close");
   client.println();
   Serial.println("Request sent");
