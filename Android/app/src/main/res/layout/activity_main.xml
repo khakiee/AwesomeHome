@@ -7,22 +7,23 @@
     tools:context=".MainActivity">
 
     <android.widget.AbsoluteLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_y="56dp"></android.support.v4.view.ViewPager>
+
         <com.astuetz.PagerSlidingTabStrip
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/mb_gray"
             app:pstsIndicatorColor="@color/mb_white"
-            app:pstsTabTextColor="@color/mb_white"
             app:pstsShouldExpand="true"
-            android:background="@color/mb_gray" />
+            app:pstsTabTextColor="@color/mb_white" />
     </android.widget.AbsoluteLayout>
 
 
