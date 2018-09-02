@@ -8,37 +8,9 @@ import wiringpi2 as wp
 switches = (5, 23, 20, 21)  # relay pin number
 
 
-def request(url, params, http_method, headers=None):
+def request(url):
     kwargs = dict()
-
-    if http_method == 'POST':
-        kwargs['data'] = params
-
-    if headers:
-        kwargs['headers'] = headers
-
-    try:
-        if http_method == 'DELETE':
-            rr = requests.delete(url, **kwargs)
-        elif http_method == 'HEAD':
-            rr = requests.head(url, **kwargs)
-        elif http_method == 'GET':
-            rr = requests.get(url, **kwargs)
-        elif http_method == 'OPTIONS':
-            rr = requests.options(url, **kwargs)
-        elif http_method == 'PATCH':
-            rr = requests.patch(url, params, **kwargs)
-        elif http_method == 'POST':
-            rr = requests.post(url, **kwargs)
-        elif http_method == 'PUT':
-            rr = requests.put(url, params, **kwargs)
-        else:
-            print('unsupported HTTP method')
-            return False
-    except Exception as ee:
-        print('failed to api call: %s' % str(ee))
-        return False
-
+    rr = requests.get(url, **kwargs)
     return rr
 
 
@@ -60,7 +32,7 @@ def main():
             time.sleep(0.5)
     '''
     while(True):
-        rr = request("http://13.209.64.184/input", dict(), "GET")
+        rr = request("http://13.209.64.184/input")
         response = rr.content.decode()
         print(response)
         
