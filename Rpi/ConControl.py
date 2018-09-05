@@ -5,8 +5,8 @@ import wiringpi2 as wp
 # pip install -r requirements.txt
 # pip install RPi.GPIO
 
-switches = (5, 23, 20, 21)  # relay pin number
-
+switches = (23, 5, 20, 21)  # relay pin number
+status = [0,0,0,0]
 
 def request(url):
     kwargs = dict()
@@ -37,6 +37,9 @@ def main():
         print(response)
         
         for idx in range(0, 4):
+
+            status[idx] = int(response[idx])
+
             if response[idx] == '0':
                 print "oh"
                 wp.pinMode(switches[idx],1)
@@ -45,8 +48,8 @@ def main():
                 print "hoho"
                 wp.pinMode(switches[idx],0)
                 time.sleep(0.1)
-    
-    
+        rr = request("http://13.209.64.184/write_output?b1="+str(status[0])+"&b2="+str(status[1])+"&b3="+str(status[2])+"&b4="+str(stauts[3]))
+
 
 if __name__ == '__main__':
     main()
