@@ -1,13 +1,17 @@
+
 <html>
 <head>
 	<title>HOME</title>
-	<link rel="stylesheet" href="css/style.css?ver=2">
+	<link rel="stylesheet" href="css/style.css?ver=5">
 <head>
 <body>
+	<h1 id = 'header'>SMART HOME</h1>
+	<h2><u id ='mode' style='color : green; font-weight : 300;'></u></h2>
 		<!-- Rectangular switch -->
 	<div class="topmenu">
   		<a class="active" href="home.html">Home</a>
 		<a href="setting.html">Setting</a>
+		<a class='refresh 'onclick="window.location.reload()" style='float: right; cursor: pointer;'>Refresh<a/>
 	</div>
 	<br/>
 	<label class="switch">
@@ -71,11 +75,31 @@
 				}
 			}
 		});
+		$.ajax({
+			url : './status_mode.php',
+			success:function(data){
+				ofdata=data;
+				if(ofdata[0]=='1'){
+					$('#mode').text('(HOME MODE)');
+					document.getElementById("v").value = '1';
+				}
+				else{
+					$('#mode').text('(OUT MODE)');
+					document.getElementById("v").value = '0';
+				}
+			}
+		
+	
+		});
 		
 	}
 	
 			
 </script>
+	
+	<h1 style='box-sizing:border-box; border:5px solid green; margin : 25px 500px; color : gray;'>100</h1>
+	
+
 
 	<p><button type='button' id='bb1' class='bb1' onclick='btevent(1);'>button1</button></p>
 	<p><button type='button' id='bb2' class='bb2' onclick='btevent(2);'>button2</button></p>
@@ -88,6 +112,7 @@
 		<input type='hidden' id='b2' name='b2' value=0>
 		<input type='hidden' id='b3' name='b3' value=0>
 		<input type='hidden' id='b4' name='b4' value=0>
+		<input type='hidden' id='v' name='v'>
 	</form>
 
 	<p>--<span id='time'></span>--</p>	

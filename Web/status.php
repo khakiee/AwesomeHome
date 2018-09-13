@@ -1,5 +1,5 @@
 <?php
-	$file = fopen('buffer/output','r');
+	$file = fopen('buffer/input','r');
 	$text = fread($file,100);
 	fclose($file);
 	echo $text;

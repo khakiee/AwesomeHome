@@ -1,4 +1,12 @@
 /* Add a black background color to the top navigation */
+body{
+	text-align : center;
+}
+#header{
+	text-align: center;
+	font-weight : 400;
+	color : green;
+}
 .topmenu {
     background-color: #333;
     overflow: hidden;
@@ -24,6 +32,10 @@
 .topmenu a.active {
     background-color: #4CAF50;
     color: white;
+}
+.topmenu a.refresh{
+	background-color: gray;
+	color : white;
 }
 /* The switch - the box around the slider */
 .switch {
@@ -120,3 +132,7 @@ button:hover:before,button:hover:after{
   width:100%;
   transition:800ms ease all;
 }
+/*
+#fresh{
+	position: absolute; right: 0;
+}*/
