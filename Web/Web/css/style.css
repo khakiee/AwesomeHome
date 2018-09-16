@@ -44,15 +44,6 @@ body{
   width: 60px;
   height: 34px;
 }
-.temper{
-  margin-top : 20;
-  position: relative;
-  display: inline-block;
-  width: 130px;
-  height: 60px;
-}
-
-.temper input {display: none;}
 
 /* Hide default HTML checkbox */
 .switch input {display:none;}
@@ -68,26 +59,6 @@ body{
   background-color: #ccc;
   -webkit-transition: .4s;
   transition: .4s;
-}
-
-.box{
-color: white;
-font-size:1.8em;
-padding-top : 10;
-height: 50px;
-position: absolute;
-cursor: pointer;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background-color: #ccc;
--webkit-transition: .4s;
-transition: .4s;
-}
-
-input:checked + .box{
-background-color: #2196F3;
 }
 
 .slider:before {
@@ -126,6 +97,7 @@ input:checked + .slider:before {
 }
 */
 button{
+  background:#1AAB8A;
   color:#fff;
   border:none;
   position:relative;
@@ -138,7 +110,7 @@ button{
 }
 button:hover{
   background:#fff;
-  color:black;
+  color:#1AAB8A;
 }
 button:before,button:after{
   content:'';
@@ -147,7 +119,7 @@ button:before,button:after{
   right:0;
   height:2px;
   width:0;
-  background: black;
+  background: #1AAB8A;
   transition:400ms ease all;
 }
 button:after{
@@ -160,13 +132,7 @@ button:hover:before,button:hover:after{
   width:100%;
   transition:800ms ease all;
 }
-
-
-
 /*
 #fresh{
 	position: absolute; right: 0;
 }*/
-
-/*power on/off button*/
-

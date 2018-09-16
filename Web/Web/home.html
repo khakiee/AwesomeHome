@@ -1,47 +1,38 @@
+
 <html>
 <head>
-        <title>HOME</title>
-        <link rel="stylesheet" href="css/style.css?ver=4">
+	<title>HOME</title>
+	<link rel="stylesheet" href="css/style.css?ver=5">
 <head>
 <body>
-	<h1 id='header'>SMART HOME</h1>
-                <!-- Rectangular switch -->
-        <div class="topmenu">
-                <a href="index.html">Home</a>
-                <a class='active' href="setting.html">Setting</a>
+	<h1 id = 'header'>SMART HOME</h1>
+	<h2><u id ='mode' style='color : green; font-weight : 300;'></u></h2>
+		<!-- Rectangular switch -->
+	<div class="topmenu">
+  		<a class="active" href="home.html">Home</a>
+		<a href="setting.html">Setting</a>
 		<a class='refresh 'onclick="window.location.reload()" style='float: right; cursor: pointer;'>Refresh<a/>
-        </div>
-	<div>
-	<h2>outlet1
-	<label class="switch">
-                <input type="checkbox" id='c1' name='c1' onclick="on(1)">
-                <span class="slider"></span>
-        </label>
 	</div>
-	<div>
-	<h2>outlet2
-        <label class="switch">
+	<br/>
+	<label class="switch">
+		
+		<input type="checkbox" id='c1' name='c1' onclick="on(1)">
+  		<span class="slider"></span>	
+	</label>
+	<label class="switch">
                 <input type="checkbox" id='c2' name='c2' onclick="on(2)">
 
                 <span class="slider"></span>
         </label>
-	</div>
-	<div>
-	<h2>outlet3
-        <label class="switch">
+	<label class="switch">
                 <input type="checkbox" id='c3' name='c3' onclick="on(3)">
                 <span class="slider"></span>
         </label>
-	</div>
-	<div>
-	<h2>outlet4
-        <label class="switch">
+	<label class="switch">
                 <input type="checkbox" id='c4' name='c4' onclick="on(4)">
                 <span class="slider"></span>
         </label>
-	</div>
-
-
+	
 <script>
 	
 	//on off event handler
@@ -51,7 +42,7 @@
 		else
 			document.getElementById("b"+data).value='0';
         	$.ajax({
-                	url:'./setting.php',
+                	url:'./write_input.php',
                 	type:'get',
                		data:$('form').serialize(),
                 	success:function(data){
@@ -64,7 +55,7 @@
 	window.onload=function(){
 		//alert("hello");
 		$.ajax({
-			url:'./default_status.php',	
+			url:'./status.php',	
 			success:function(data){
 				ofdata=data;
 				$('#time').text(data);
@@ -84,19 +75,44 @@
 				}
 			}
 		});
+		$.ajax({
+			url : './status_mode.php',
+			success:function(data){
+				ofdata=data;
+				if(ofdata[0]=='1'){
+					$('#mode').text('(HOME MODE)');
+					document.getElementById("v").value = '1';
+				}
+				else{
+					$('#mode').text('(OUT MODE)');
+					document.getElementById("v").value = '0';
+				}
+			}
+		
+	
+		});
 		
 	}
 	
 			
 </script>
+	
+	<h1 style='box-sizing:border-box; border:5px solid green; margin : 25px 500px; color : gray;'>100</h1>
+	
 
 
+	<p><button type='button' id='bb1' class='bb1' onclick='btevent(1);'>button1</button></p>
+	<p><button type='button' id='bb2' class='bb2' onclick='btevent(2);'>button2</button></p>
+	<p><button type='button' id='bb3' class='bb3' onclick='btevent(3);'>button3</button></p>
+	<p><button type='button' id='bb4' class='bb4' onclick='btevent(4);'>button4</button></p>
+	
 	<!--sending data to php file -->		
 	<form>
 		<input type='hidden' id='b1' name='b1' value=0>
 		<input type='hidden' id='b2' name='b2' value=0>
 		<input type='hidden' id='b3' name='b3' value=0>
 		<input type='hidden' id='b4' name='b4' value=0>
+		<input type='hidden' id='v' name='v'>
 	</form>
 
 	<p>--<span id='time'></span>--</p>	
@@ -104,11 +120,12 @@
 </body>
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script>
+
 // button event handler
 function btevent(data){
 	document.getElementById("b"+data).value = '1'; 
 	$.ajax({
-		url:'./setting.php',
+		url:'./write_input.php',
 		type:'get',
 		data:$('form').serialize(),
 		success:function(data){
@@ -117,6 +134,6 @@ function btevent(data){
 	})
 	document.getElementById("b"+data).value = '0'; 
 }
+
 </script>
-</body>
 </html>

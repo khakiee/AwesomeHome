@@ -1,0 +1,202 @@
+<html>
+<head>
+	<title>HOME</title>
+	<link rel="stylesheet" href="./css/style.css?ver=6">
+	<link rel="stylesheet" href="./css/button.css?ver=1">
+<head>
+<body>
+	<h1 id = 'header'>SMART HOME</h1>
+	<h2><u id ='mode' style='color : green; font-weight : 300;'></u></h2>
+		<!-- Rectangular switch -->
+	<div class="topmenu">
+  		<a class="active" href="index.html">Home</a>
+		<a href="setting.html">Setting</a>
+		<a class='refresh 'onclick="window.location.reload()" style='float: right; cursor: pointer;'>Refresh<a/>
+	</div>
+	<br/>
+	<label class="switch">
+		
+		<input type="checkbox" id='c1' name='c1' onclick="on(1)">
+  		<span class="slider"></span>	
+	</label>
+	<label class="switch">
+                <input type="checkbox" id='c2' name='c2' onclick="on(2)">
+
+                <span class="slider"></span>
+        </label>
+	<label class="switch">
+                <input type="checkbox" id='c3' name='c3' onclick="on(3)">
+                <span class="slider"></span>
+        </label>
+	<label class="switch">
+                <input type="checkbox" id='c4' name='c4' onclick="on(4)">
+                <span class="slider"></span>
+        </label>
+	
+<script>
+	
+	//on off event handler
+	function on(data){
+		if(document.getElementById("b"+data).value=='0')
+			document.getElementById("b"+data).value='1';
+		else
+			document.getElementById("b"+data).value='0';
+        	$.ajax({
+                	url:'./write_input.php',
+                	type:'get',
+               		data:$('form').serialize(),
+                	success:function(data){
+                        	$('#time').text(data);
+                	}
+        	})
+	}
+	var ofdata;
+	//on off status check
+	window.onload=function(){
+		//alert("hello");
+		$.ajax({
+			url:'./status.php',	
+			success:function(data){
+				ofdata=data;
+				$('#time').text(data);
+				//alert(ofdata[1]);
+				var k;
+				for(var i=0;i<ofdata.length;i++){
+					k=i+1;
+					if(ofdata[i]=='0'){
+						document.getElementById("c"+k).checked = true;
+						document.getElementById("b"+k).value = '0';
+					}
+					else if(ofdata[i]=='1'){
+						document.getElementById("b"+k).value = '1';
+						document.getElementById("c"+k).checked = false;	
+					}
+					
+				}
+			}
+		});
+		$.ajax({
+			url : './status_mode.php',
+			success:function(data){
+				ofdata=data;
+				if(ofdata[0]=='1'){
+					$('#mode').text('(HOME MODE)');
+					document.getElementById("v").value = '1';
+				}
+				else{
+					$('#mode').text('(OUT MODE)');
+					document.getElementById("v").value = '0';
+				}
+			}
+		
+	
+		});
+		 $.get("./buffer/temper", function(data, status){
+        		//alert("Data: " + data + "\nStatus: " + status);
+			if(data!=-1){
+				$("input:checkbox[id='power']").attr("checked",true);
+				if(data==18)
+					$("input:checkbox[id='t1']").attr("checked",true);
+				else if(data==20)
+					$("input:checkbox[id='t2']").attr("checked",true);
+				else
+					$("input:checkbox[id='t3']").attr("checked",true);
+				$("#temper_num").text(data);
+			}	
+			
+    		});
+		
+	}
+	
+			
+</script>
+	
+	<h1 id ='temper_num' style='box-sizing:border-box; border:5px solid gray; margin : 25px 500px; color : gray;'>NULL</h1>
+	
+	<label class="switch">
+                <input type="checkbox" id='power' name='power' onclick='power_event();'>
+                <span class="slider"></span>
+        </label>
+	<br/>
+	
+	<label class="temper">
+		<input type="checkbox" id='t1' name='t1'  onclick='t_event(18);'>
+		<span class="box">18</span>
+	</label></br>
+	
+	<label class="temper">
+		<input type="checkbox" id='t2' name='t2'  onclick='t_event(20);'>
+		<span class="box">20</span>
+	</label></br>
+	
+	<label class="temper">
+		<input type="checkbox" id='t3' name='t3' onclick='t_event(24);'>
+		<span class="box">24</span>
+	</label>
+	
+	
+	
+	<!--sending data to php file -->		
+	<form>
+		<input type='hidden' id='b1' name='b1' value=0>
+		<input type='hidden' id='b2' name='b2' value=0>
+		<input type='hidden' id='b3' name='b3' value=0>
+		<input type='hidden' id='b4' name='b4' value=0>
+	</form>
+	
+	
+
+	<p>--<span id='time'></span>--</p>	
+
+</body>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script>
+function power_event(){
+	if($("input:checkbox[id='power']").is(":checked")==false){
+		$("input:checkbox[id='t1']").attr("checked",false);
+	        $("input:checkbox[id='t2']").attr("checked",false);
+        	$("input:checkbox[id='t3']").attr("checked",false);
+		
+		$.post("temper.php",{'temper' : '-1'},
+		function(data,status){
+			//alert("Data: " +data);
+		});
+		$('#temper_num').text("NULL");
+	}
+}	
+// button event handler
+function t_event(num){
+    if($("input:checkbox[id='power']").is(":checked")==false){
+        $("input:checkbox[id='t1']").attr("checked",false);
+        $("input:checkbox[id='t2']").attr("checked",false);
+        $("input:checkbox[id='t3']").attr("checked",false);
+	
+	alert("please power on");
+	return;
+	    
+    }    
+
+    if(num==18){
+    	$("input:checkbox[id='t2']").attr("checked",false);
+    	$("input:checkbox[id='t3']").attr("checked",false);
+    }
+    else if(num==20){	
+    	$("input:checkbox[id='t1']").attr("checked",false);
+	$("input:checkbox[id='t3']").attr("checked",false);
+    }
+    else{
+        $("input:checkbox[id='t1']").attr("checked",false);
+        $("input:checkbox[id='t2']").attr("checked",false);
+    }
+    $('#temper_num').text(num);
+    $.post("temper.php",
+    {
+        'temper' : num
+    },
+    function(data, status){
+        //alert("Data: " + data);
+    });	
+}
+
+</script>
+</html>
