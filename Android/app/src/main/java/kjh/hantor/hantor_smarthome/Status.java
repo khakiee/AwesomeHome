@@ -1,6 +1,8 @@
 package kjh.hantor.hantor_smarthome;
 
-import android.content.Context;
+
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,20 +12,28 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 
+import static java.lang.System.in;
 
 class CustomButton {
     public CustomButton(Button con) {
@@ -39,40 +49,23 @@ class CustomButton {
 
 public class Status extends Fragment {
     private static final int CON_SIZE = 4;
+    private static final int RESULT_OK = -1;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
     CustomButton[] button = new CustomButton[4];
+    TextView voice;
+    Button voice_btn;
 
     public Status() {
     }
 
     private String makePOSTurl(String idx, String on_off) {
-        String temp = "http://13.209.64.184/index.php?b" + idx + "=" + on_off;
+        String temp = "http://13.125.227.46/write_input.php?b" + idx + "=" + on_off;
         return temp;
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       /* try {
-            Connection init = new Connection("http://http://35.167.126.17/status");
-            init_btn_stat = init.resp.body().string();
-            //btn control
-            for(int i = 0 ; i < CON_SIZE ; i ++){
-                if(init_btn_stat.charAt(i) == 0){
-                    con[i].setBackgroundColor(getResources().getColor(R.color.mb_red));
-                    con[i].setText("OFF");
-                    status[i] = false;
-
-                }
-                else{
-                    con[i].setBackgroundColor(getResources().getColor(R.color.mb_blue));
-                    con[i].setText("ON");
-                    status[i] = true;
-                }
-            }
-            Toast.makeText(this.getContext(), "Load Completed", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
     }
 
@@ -83,13 +76,15 @@ public class Status extends Fragment {
 
         HTTPgetUtils init_button = new HTTPgetUtils();
         try {
-            init_button.execute("http://13.209.64.184/status.php").get();
+            init_button.execute("http://13.125.227.46/buffer/input").get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
+        voice = (TextView) layout.findViewById(R.id.voice);
+        voice_btn = (Button) layout.findViewById(R.id.voice_btn);
 
         button[0] = new CustomButton(new Button(layout.getContext()));
         button[1] = new CustomButton(new Button(layout.getContext()));
@@ -118,6 +113,13 @@ public class Status extends Fragment {
                 }
             }
         }
+        voice_btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                promptSpeechInput();
+            }
+        });
 
         View.OnClickListener onclick = new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -152,13 +154,13 @@ public class Status extends Fragment {
             button[i].con.setOnClickListener(onclick);
         }
 
-        new CountDownTimer(16069000, 5000) {
+        new CountDownTimer(16069000, 1000) {
 
             public void onTick(long millisUntilFinished) {
 
                 HTTPgetUtils init_button = new HTTPgetUtils();
                 try {
-                    init_button.execute("http://13.209.64.184/status.php").get();
+                    init_button.execute("http://13.125.227.46/buffer/input").get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -179,19 +181,126 @@ public class Status extends Fragment {
                         }
                     }
                 }
-                Toast.makeText(layout.getContext(),"seconds remaining: " + millisUntilFinished / 1000,Toast.LENGTH_SHORT);
+                Toast.makeText(layout.getContext(), "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_SHORT);
 
 
             }
 
             public void onFinish() {
-                Toast.makeText(layout.getContext(),"updated!!",Toast.LENGTH_SHORT);
+                Toast.makeText(layout.getContext(), "updated!!", Toast.LENGTH_SHORT);
             }
 
         }.start();
 
         return layout;
 
+    }
+
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getLayoutInflater().getContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("REQCODE",String.valueOf(requestCode));
+        if(requestCode == REQ_CODE_SPEECH_INPUT) {
+            Log.d("result",String.valueOf(resultCode));
+            if (resultCode == RESULT_OK) {
+                ArrayList<String> matches_text = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                Log.e("Voice", matches_text.toString());
+                Log.e("data->tostring",matches_text.toString());
+
+                if(matches_text.contains("일본 거")||matches_text.contains("일번 꺼")||matches_text.contains("1번 꺼")||matches_text.contains("1번 꺼")){
+                    Log.e("Voice-Off","OFF 1");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[0].isButtonRed = true;
+                    button[0].OnOffStatus = 1;
+                    button[0].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_off));
+                    voice.execute(makePOSTurl(String.valueOf(1), String.valueOf(button[0].OnOffStatus)));
+                }
+                else if(matches_text.contains("일번 켜")||matches_text.contains("일본 켜")||matches_text.contains("1본 켜")||matches_text.contains("1번 켜")) {
+                    Log.e("Voice-Off", "ON 1");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[0].isButtonRed = false;
+                    button[0].OnOffStatus = 0;
+                    button[0].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_on));
+                    voice.execute(makePOSTurl(String.valueOf(1), String.valueOf(button[0].OnOffStatus)));
+                }
+                else if(matches_text.contains("이번 켜")||matches_text.contains("이본 켜")||matches_text.contains("2번 켜")||matches_text.contains("2본 켜")){
+                    Log.e("Voice-Off","OFF 2");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[1].isButtonRed = false;
+                    button[1].OnOffStatus = 0;
+                    button[1].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_on));
+                    voice.execute(makePOSTurl(String.valueOf(2), String.valueOf(button[1].OnOffStatus)));
+
+                }
+                else if(matches_text.contains("이번 꺼")||matches_text.contains("이본 꺼")||matches_text.contains("2 본 꺼")||matches_text.contains("2번 꺼")){
+                    Log.e("Voice-Off","OFF 2");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[1].isButtonRed = true;
+                    button[1].OnOffStatus = 1;
+                    button[1].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_off));
+                    voice.execute(makePOSTurl(String.valueOf(2), String.valueOf(button[1].OnOffStatus)));
+
+                }
+                else if(matches_text.contains("3번 꺼")||matches_text.contains("삼번 꺼")||matches_text.contains("3 번 꺼")||matches_text.contains("3 번 거")){
+                    Log.e("Voice-Off","OFF 3");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[2].isButtonRed = true;
+                    button[2].OnOffStatus = 1;
+                    button[2].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_off));
+                    voice.execute(makePOSTurl(String.valueOf(3), String.valueOf(button[2].OnOffStatus)));
+
+                }
+                else if(matches_text.contains("3번 켜")|| matches_text.contains("삼번 켜")||matches_text.contains("3 번 켜")){
+                    Log.e("Voice-Off","ON 3");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[2].isButtonRed = false;
+                    button[2].OnOffStatus = 0;
+                    button[2].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_on));
+                    voice.execute(makePOSTurl(String.valueOf(3), String.valueOf(button[2].OnOffStatus)));
+
+                }
+                else if(matches_text.contains("사번 꺼")||matches_text.contains("사본 거")||matches_text.contains("4번 꺼")||matches_text.contains("4 번 거")){
+                    Log.e("Voice-Off","OFF 4");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[3].isButtonRed = true;
+                    button[3].OnOffStatus = 1;
+                    button[3].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_off));
+                    voice.execute(makePOSTurl(String.valueOf(4), String.valueOf(button[3].OnOffStatus)));
+
+                }
+                else if(matches_text.contains("사번 켜")||matches_text.contains("사본 켜")||matches_text.contains("4 번 켜")||matches_text.contains("사 번 켜")){
+                    Log.e("Voice-Off","ON 4");
+                    HTTPgetUtils voice = new HTTPgetUtils();
+                    button[3].isButtonRed = false;
+                    button[3].OnOffStatus = 0;
+                    button[3].con.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rad_button_on));
+                    voice.execute(makePOSTurl(String.valueOf(4), String.valueOf(button[3].OnOffStatus)));
+
+                }
+                else{
+                    Toast.makeText(getContext(),"다시 말해 주세요",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
 
@@ -235,9 +344,11 @@ class HTTPgetUtils extends AsyncTask<String, String, String> {
 
     }
 
+
     protected void onPostExecute(Long result) {
 
     }
 
 }
+
 
