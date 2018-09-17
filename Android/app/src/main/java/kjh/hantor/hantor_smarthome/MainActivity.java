@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity{
     }
     private class pagerAdapter extends FragmentStatePagerAdapter
     {
-        private final String[] TITLES = {"Status","Remote"};
+        private final String[] TITLES = {"Status","Remote","Config"};
         public pagerAdapter(android.support.v4.app.FragmentManager fm)
         {
             super(fm);
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity{
                     return new Status();
                 case 1:
                     return new Remote();
+                case 2:
+                    return new Config();
                 default :
                     return null;
             }
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity{
         @Override
         public int getCount()
         {
-            return 2;
+            return 3;
         }
     }
 }
