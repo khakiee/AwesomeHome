@@ -1,0 +1,6 @@
+<ul>
+  <% @today_events.each do |event| %>
+    <li><%= event.title %> (<%= "#{event.starts_at.strftime("%Y/%m/%d")} ~ #{event.expires_at.strftime("%Y/%m/%d")}" %>)</li>
+  <% end %>
+</ul>
+test
