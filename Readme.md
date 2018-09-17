@@ -51,7 +51,7 @@ dependencies {
 ## Web, Server
 
 ## Arduino and Rpi
-###Raspberry Pi
+### Raspberry Pi
 
 와이파이 IP가 바뀌는 경우 -> serial 통신
 
@@ -70,7 +70,7 @@ mac -> sudo screen -L /dev/tty.usbserial -L 9600
 	cd plug
 	sudo python ConControl.py
 
-###Calendar and weather
+### Calendar and weather
 
 - weather
 	hantor_home_iot_ino file
